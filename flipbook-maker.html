@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flip Book Maker</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1>Flip Book Maker</h1>
+<p class="sub">Video → printable flip book PDF. Runs entirely in your browser; your video never leaves this computer. No frame limit.</p>
+
+<div class="wrap">
+<div>
+  <div class="box">
+    <div class="row"><input type="file" id="file" accept="video/*"> <span id="meta" class="muted">No video loaded</span></div>
+    <canvas id="pv" width="640" height="360"></canvas>
+    <div class="row" style="margin-top:8px">
+      <button id="play" disabled>Play</button>
+      <input type="range" id="scrub" min="0" max="1" step="0.01" value="0" disabled>
+      <span id="tnow" style="font-variant-numeric:tabular-nums">0.00s</span>
+    </div>
+    <p class="muted" style="margin:0">Drag on the preview to draw a crop box. The dimmed area gets cut away.</p>
+  </div>
+  <div class="box">
+    <h2>Output frame preview</h2>
+    <canvas id="out" width="200" height="120"></canvas>
+  </div>
+</div>
+
+<div>
+  <div class="box">
+    <h2>1. Trim</h2>
+    <div class="row">
+      <label>Start <input type="number" id="tStart" step="0.01" min="0" value="0">s</label>
+      <button id="setStart">Set to current</button>
+    </div>
+    <div class="row">
+      <label>End <input type="number" id="tEnd" step="0.01" min="0" value="0">s</label>
+      <button id="setEnd">Set to current</button>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>2. Rotate &amp; crop</h2>
+    <div class="row">
+      <button id="rotL">⟲ 90°</button><button id="rotR">⟳ 90°</button>
+      <label><input type="checkbox" id="flipH"> Mirror</label>
+      <span id="rotLbl" class="muted">0°</span>
+    </div>
+    <div class="row">
+      <label>X <input type="number" id="cx" min="0" max="100" step="0.5" value="0">%</label>
+      <label>Y <input type="number" id="cy" min="0" max="100" step="0.5" value="0">%</label>
+      <label>W <input type="number" id="cw" min="1" max="100" step="0.5" value="100">%</label>
+      <label>H <input type="number" id="ch" min="1" max="100" step="0.5" value="100">%</label>
+    </div>
+    <div class="row"><button id="cropReset">Reset crop</button></div>
+  </div>
+
+  <div class="box">
+    <h2>3. Lighting</h2>
+    <div class="slider"><label for="aBri">Brightness</label><input type="range" id="aBri" min="-100" max="100" value="0"><span id="vBri">0</span></div>
+    <div class="slider"><label for="aCon">Contrast</label><input type="range" id="aCon" min="-100" max="100" value="0"><span id="vCon">0</span></div>
+    <div class="slider"><label for="aGam">Exposure (γ)</label><input type="range" id="aGam" min="0.3" max="3" step="0.05" value="1"><span id="vGam">1.00</span></div>
+    <div class="slider"><label for="aSat">Saturation</label><input type="range" id="aSat" min="0" max="200" value="100"><span id="vSat">100</span></div>
+    <div class="row">
+      <label><input type="checkbox" id="gray"> Black &amp; white (saves ink)</label>
+      <label><input type="checkbox" id="inv"> Invert colors</label>
+      <button id="adjReset">Reset lighting</button>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>4. Frames &amp; paper</h2>
+    <div class="row">
+      <label><select id="fMode"><option value="count">Total frames</option><option value="fps">Frames per second</option></select></label>
+      <input type="number" id="fVal" min="1" step="1" value="120">
+    </div>
+    <div class="row">
+      <label>Paper <select id="paper"><option value="a4">A4</option><option value="letter">Letter</option><option value="legal">Legal</option><option value="a3">A3</option></select></label>
+      <label><select id="orient"><option value="p">Portrait</option><option value="l">Landscape</option></select></label>
+    </div>
+    <div class="row">
+      <label>Frame height <input type="number" id="fh" min="0.5" step="0.1" value="2">in</label>
+      <label>Binding margin <input type="number" id="tab" min="0" step="0.1" value="1">in</label>
+    </div>
+    <div class="row">
+      <label>Print quality <select id="dpi"><option value="100">Draft (100 dpi)</option><option value="150" selected>Normal (150 dpi)</option><option value="220">High (220 dpi)</option><option value="300">Max (300 dpi)</option></select></label>
+      <label><input type="checkbox" id="rev"> Reverse order</label>
+    </div>
+    <div id="info" class="muted"></div>
+  </div>
+
+  <div class="box">
+    <h2>5. Flip book preview</h2>
+    <p class="muted" style="margin:0 0 8px">Plays exactly the frames that will be printed, with all your edits.</p>
+    <div class="row">
+      <button id="fbBuild" disabled>Build preview</button>
+      <button id="fbPlay" disabled>Play</button>
+      <label>Speed <input type="number" id="fbFps" min="1" max="60" step="1" value="12"> frames/sec</label>
+      <button id="fbReal" disabled>Real-time</button>
+    </div>
+    <div class="row">
+      <input type="range" id="fbScrub" min="0" max="0" step="1" value="0" disabled>
+      <span id="fbNum" style="font-variant-numeric:tabular-nums">0 / 0</span>
+    </div>
+    <div style="background:#fff;border:1px solid var(--line);padding:8px;text-align:center;min-height:60px">
+      <img id="fbImg" alt="Flip book frame" style="max-width:100%;max-height:320px;display:none;margin:auto">
+      <span id="fbEmpty" style="color:#888">Click "Build preview" to see your flip book animate.</span>
+    </div>
+    <div id="fbStatus" class="muted" style="margin-top:6px"></div>
+  </div>
+
+  <div class="box">
+    <div class="row">
+      <button class="primary" id="gen" disabled>Generate PDF</button>
+      <button id="cancel" hidden>Cancel</button>
+    </div>
+    <progress id="prog" value="0" max="1" hidden></progress>
+    <div id="status" class="muted"></div>
+  </div>
+</div>
+</div>
+
+<video id="vid" muted playsinline preload="auto"></video>
+
+<script src="js/lib/jspdf.js"></script>
+<script src="js/dom.js"></script>
+<script src="js/state.js"></script>
+<script src="js/converter-worker.js"></script>
+<script src="js/converter.js"></script>
+<script src="js/video-loader.js"></script>
+<script src="js/playback.js"></script>
+<script src="js/lighting.js"></script>
+<script src="js/render.js"></script>
+<script src="js/preview.js"></script>
+<script src="js/crop.js"></script>
+<script src="js/rotation.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/frame-capture.js"></script>
+<script src="js/pdf-export.js"></script>
+<script src="js/flip-preview.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
