@@ -7,20 +7,22 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<header>
 <h1>Flip Book Maker</h1>
 <p class="sub">Video → printable flip book PDF. Runs entirely in your browser; your video never leaves this computer. No frame limit.</p>
+</header>
 
 <div class="wrap">
 <div>
   <div class="box">
     <div class="row"><input type="file" id="file" accept="video/*"> <span id="meta" class="muted">No video loaded</span></div>
     <canvas id="pv" width="640" height="360"></canvas>
-    <div class="row" style="margin-top:8px">
+    <div class="row controls">
       <button id="play" disabled>Play</button>
       <input type="range" id="scrub" min="0" max="1" step="0.01" value="0" disabled>
-      <span id="tnow" style="font-variant-numeric:tabular-nums">0.00s</span>
+      <span id="tnow" class="num">0.00s</span>
     </div>
-    <p class="muted" style="margin:0">Drag on the preview to draw a crop box. The dimmed area gets cut away.</p>
+    <p class="muted hint">Drag on the preview to draw a crop box. The dimmed area gets cut away.</p>
   </div>
   <div class="box">
     <h2>Output frame preview</h2>
@@ -88,12 +90,12 @@
       <label>Print quality <select id="dpi"><option value="100">Draft (100 dpi)</option><option value="150" selected>Normal (150 dpi)</option><option value="220">High (220 dpi)</option><option value="300">Max (300 dpi)</option></select></label>
       <label><input type="checkbox" id="rev"> Reverse order</label>
     </div>
-    <div id="info" class="muted"></div>
+    <div id="info" class="muted status"></div>
   </div>
 
   <div class="box">
     <h2>5. Flip book preview</h2>
-    <p class="muted" style="margin:0 0 8px">Plays exactly the frames that will be printed, with all your edits.</p>
+    <p class="muted hint">Plays exactly the frames that will be printed, with all your edits.</p>
     <div class="row">
       <button id="fbBuild" disabled>Build preview</button>
       <button id="fbPlay" disabled>Play</button>
@@ -102,13 +104,13 @@
     </div>
     <div class="row">
       <input type="range" id="fbScrub" min="0" max="0" step="1" value="0" disabled>
-      <span id="fbNum" style="font-variant-numeric:tabular-nums">0 / 0</span>
+      <span id="fbNum" class="num">0 / 0</span>
     </div>
-    <div style="background:#fff;border:1px solid var(--line);padding:8px;text-align:center;min-height:60px">
-      <img id="fbImg" alt="Flip book frame" style="max-width:100%;max-height:320px;display:none;margin:auto">
-      <span id="fbEmpty" style="color:#888">Click "Build preview" to see your flip book animate.</span>
+    <div class="flip-stage">
+      <img id="fbImg" alt="Flip book frame" style="display:none">
+      <span id="fbEmpty" class="muted">Click "Build preview" to see your flip book animate.</span>
     </div>
-    <div id="fbStatus" class="muted" style="margin-top:6px"></div>
+    <div id="fbStatus" class="muted status"></div>
   </div>
 
   <div class="box">
@@ -117,7 +119,7 @@
       <button id="cancel" hidden>Cancel</button>
     </div>
     <progress id="prog" value="0" max="1" hidden></progress>
-    <div id="status" class="muted"></div>
+    <div id="status" class="muted status"></div>
   </div>
 </div>
 </div>

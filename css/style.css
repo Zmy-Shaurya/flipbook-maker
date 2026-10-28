@@ -1,148 +1,251 @@
+/* ---------- theme ---------- */
 :root {
-  --bg: #f6f6f4;
-  --panel: #fff;
-  --fg: #1d1f22;
-  --muted: #6b6f76;
-  --line: #d6d6d2;
-  --accent: #1f5fbf;
-  --warn: #a5520a;
+  --bg: #f4f5f7;
+  --panel: #ffffff;
+  --fg: #1b1e24;
+  --muted: #667085;
+  --line: #e1e4ea;
+  --field: #f8f9fb;
+  --accent: #2b59d9;
+  --accent-hover: #2249b5;
+  --warn: #b45309;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #16181b;
-    --panel: #1f2226;
-    --fg: #e8e8e6;
-    --muted: #9aa0a8;
-    --line: #363a40;
-    --accent: #6ea2ef;
-    --warn: #e0a060;
+    --bg: #121418;
+    --panel: #1b1e24;
+    --fg: #e9ebef;
+    --muted: #98a1b0;
+    --line: #2f343d;
+    --field: #14171c;
+    --accent: #6c93f0;
+    --accent-hover: #86a6f4;
+    --warn: #e5a35c;
+    --shadow: none;
     color-scheme: dark;
   }
 }
+
+/* ---------- base ---------- */
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
+  padding: 24px 20px 40px;
   background: var(--bg);
   color: var(--fg);
   font:
-    14px/1.4 system-ui,
+    14px/1.5 system-ui,
     -apple-system,
-    Segoe UI,
+    'Segoe UI',
     Roboto,
     sans-serif;
-  padding: 16px;
+}
+header,
+.wrap {
+  max-width: 1200px;
+  margin-inline: auto;
 }
 h1 {
-  font-size: 18px;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, var(--accent), #9b5de5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .sub {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 15px;
   color: var(--muted);
-  margin: 0 0 14px;
 }
+header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---------- layout ---------- */
 .wrap {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 16px;
-  max-width: 1300px;
+  gap: 20px;
+  align-items: start;
 }
 @media (max-width: 900px) {
   .wrap {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- cards ---------- */
 .box {
+  margin-bottom: 16px;
+  padding: 16px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 .box h2 {
-  font-size: 13px;
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 10px;
   color: var(--muted);
 }
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 8px 14px;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
+.row:last-child {
+  margin-bottom: 0;
+}
+.controls {
+  margin-top: 12px;
+}
+.hint {
+  margin: 0 0 10px;
+}
+.status {
+  margin-top: 8px;
+}
+
+/* ---------- form controls ---------- */
 label {
   display: flex;
   align-items: center;
   gap: 6px;
 }
+input[type='number'],
+select {
+  padding: 6px 8px;
+  background: var(--field);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
 input[type='number'] {
   width: 80px;
-  padding: 4px;
-  background: var(--bg);
-  color: var(--fg);
-  border: 1px solid var(--line);
-  border-radius: 4px;
 }
-select {
-  padding: 4px;
-  background: var(--bg);
-  color: var(--fg);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+input[type='number']:focus,
+select:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 input[type='range'] {
   flex: 1;
   min-width: 120px;
+  accent-color: var(--accent);
 }
+input[type='checkbox'] {
+  accent-color: var(--accent);
+}
+input[type='file'] {
+  font: inherit;
+}
+
+/* ---------- buttons ---------- */
 button {
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  background: var(--bg);
+  padding: 7px 12px;
+  background: var(--panel);
   color: var(--fg);
-  border-radius: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 500;
   cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+button:hover:not(:disabled) {
+  background: var(--field);
+  border-color: var(--muted);
 }
 button.primary {
+  padding: 10px 20px;
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
   font-weight: 600;
-  padding: 9px 16px;
+}
+button.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: default;
 }
+
+/* ---------- sliders ---------- */
 .slider {
   display: grid;
   grid-template-columns: 110px 1fr 52px;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .slider span {
-  font-variant-numeric: tabular-nums;
   text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
 }
+.num {
+  min-width: 4ch;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* ---------- canvases + preview ---------- */
 #pv {
+  display: block;
   width: 100%;
   max-height: 60vh;
   object-fit: contain;
   background: #000;
+  border-radius: 6px;
   touch-action: none;
   cursor: crosshair;
-  display: block;
 }
 #out {
   max-width: 100%;
   max-height: 200px;
-  border: 1px solid var(--line);
   background: #000;
+  border: 1px solid var(--line);
+  border-radius: 6px;
 }
+.flip-stage {
+  display: grid;
+  place-items: center;
+  min-height: 80px;
+  padding: 10px;
+  text-align: center;
+  background: var(--field);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+}
+.flip-stage img {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: 4px;
+}
+
+/* ---------- text + status ---------- */
 .muted {
   color: var(--muted);
 }
@@ -154,8 +257,11 @@ button:disabled {
 }
 progress {
   width: 100%;
-  height: 14px;
+  height: 10px;
+  accent-color: var(--accent);
 }
+
+/* The video element must exist but stay invisible; frames are drawn on canvases. */
 #vid {
   position: absolute;
   width: 2px;
